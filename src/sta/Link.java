@@ -45,7 +45,7 @@ public class Link
     public double getTravelTime()
     {
         // fill this in
-        double t_ij = 0;
+        double t_ij = t_ff*(1+(alpha*(Math.pow((x/C),beta))));
         
         return t_ij;
     }
@@ -59,13 +59,13 @@ public class Link
     public double getCapacity()
     {
         // fill this in
-        return 0;
+        return C;
     }
     
     public double getFlow()
     {
         // fill this in
-        return 0;
+        return x;
     }
     
     
@@ -88,13 +88,13 @@ public class Link
     public Node getStart()
     {
         // fill this in
-        return null;
+        return start;
     }
     
     public Node getEnd()
     {
         // fill this in
-        return null;
+        return end;
     }
     
     
@@ -104,7 +104,9 @@ public class Link
     public String toString()
     {
         // fill this in
-        return "";
+        return "(" + start.toString() + ", " + end.toString() + ")";
+   
+     
     }
     
     

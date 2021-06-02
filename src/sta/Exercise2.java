@@ -47,9 +47,15 @@ public class Exercise2
     public static void findCongestedLinks(Link[] array)
     {
         // print travel times of all links. Then for each link, if it has volume/capacity > 1, print yes. Otherwise, print no. Print each on a separate line. 
-        
-        
-        // fill this in
+       for(Link l : array){
+            System.out.print("link " + l );
+            System.out.print(l.getTravelTime());
+            if((l.getFlow()/l.getCapacity()) > 1){
+                System.out.println(" yes");
+            } else if ((l.getFlow()/l.getCapacity()) <= 1){
+                System.out.println(" no");
+            }
+        }
     }
     
     public static void autograde()

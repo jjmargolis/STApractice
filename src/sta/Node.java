@@ -15,7 +15,7 @@ import java.util.List;
 public class Node 
 {
     
-    
+    private int id;
     /* **********
     Exercise 3(b)
     ********** */
@@ -25,13 +25,13 @@ public class Node
     
     public Node(int id)
     {
-        // fill this in
+        this.id=id;
     }
     
     public int getId()
     {
         // fill this in
-        return 0;
+        return id;
     }
     
     
@@ -57,7 +57,8 @@ public class Node
     public String toString()
     {
         // fill this in
-        return "";
+        
+        return String.valueOf(id);
     }
     
     
