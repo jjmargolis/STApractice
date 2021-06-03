@@ -21,7 +21,7 @@ public class Exercise5
         Link[] links = network.getLinks();
         
         for(int i = 0; i < zones.length; i++)
-        {
+        {   
             System.out.println(zones[i]+" "+(zones[i] == nodes[i])+" "+zones[i].getOutgoing());
         }
         

@@ -16,6 +16,7 @@ public class Node
 {
     
     private int id;
+    private ArrayList<Link> outGoing = new ArrayList<Link>();    
     /* **********
     Exercise 3(b)
     ********** */
@@ -30,7 +31,6 @@ public class Node
     
     public int getId()
     {
-        // fill this in
         return id;
     }
     
@@ -69,13 +69,12 @@ public class Node
     ********** */
     public ArrayList<Link> getOutgoing()
     {
-        // fill this in
-        return null;
+        return this.outGoing;
     }
     
     public void addOutgoingLink(Link l)
     {
-        // fill this in
+        this.outGoing.add(l);
     }
     
     

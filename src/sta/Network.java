@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
 
 /**
  *
@@ -22,9 +23,54 @@ public class Network
     
     public Network(String name)
     {
-        nodes = new Node[0];
-        links = new Link[0];
-        zones = new Zone[0];
+        System.out.println("NEW NETWORK NOW");
+        int numNodes=0;
+        int numLinks=0;
+        int numZones=0;
+        try{
+            File myObj = new File("C:/Users/jmarg/Documents/Github/STApractice/data/"+name+"/net.txt");
+            Scanner myReader = new Scanner(myObj);
+            Boolean end = false;
+            while(myReader.hasNextLine() && end == false){
+                String data = myReader.nextLine();
+                //System.out.println("The next line is: " + data);
+                if(!data.contains("<END OF METADATA>")) {
+                    //System.out.println("Reading Metadata");
+                    if(data.contains("<NUMBER OF ZONES>")){
+                        data = data.substring(data.indexOf(">")+1);
+                        data = data.trim();
+                        numZones=Integer.parseInt(data);
+                    }   
+                    if(data.contains("<NUMBER OF NODES>")){
+                        data = data.substring(data.indexOf(">")+1);
+                        data = data.trim();
+                        numNodes=Integer.parseInt(data);
+                    }
+                    if(data.contains("<NUMBER OF LINKS>")){
+                        data = data.substring(data.indexOf(">")+1);
+                        data = data.trim();
+                        numLinks=Integer.parseInt(data);
+                     } 
+                 } else {
+                     //System.out.println("End of metadata reached");
+                     end = true;
+                 }
+            }
+            System.out.println("Closing metadata scanner");
+            myReader.close(); 
+        } catch (FileNotFoundException e){
+            System.out.println("An error occurred reading the file for the metadata.");
+            e.printStackTrace();
+        }
+        
+
+        
+        System.out.println("numNodes = " + numNodes);
+        System.out.println("numLinks = " + numLinks);
+        System.out.println("numZones = " + numZones);
+        nodes = new Node[numNodes];
+        links = new Link[numLinks];
+        zones = new Zone[numZones];
         
         
         try
@@ -67,17 +113,55 @@ public class Network
     
     public void readNetwork(File netFile) throws IOException
     {
+
         /* **********
         Exercise 5(b)
         ********** */
+        for(int i = 0; i < zones.length; i++){
+            zones[i] = new Zone(i);
+        }
+        //do not construct new nodes, use existing zones
+        for(int i = 0; i < nodes.length; i++){
+            if(i < zones.length){
+                nodes[i] = zones[i];
+            } else {
+                nodes[i] = new Node(i);
+            }
+            
+        }        
         
         
         /* **********
         Exercise 5(c)
         ********** */
-        
-       
-        // fill this in
+        Boolean isData = false;
+        int i = 0;
+        try{
+            Scanner myReader = new Scanner(netFile);
+            while(myReader.hasNextLine()){
+                String data = myReader.nextLine();
+                if(isData && i < links.length){
+                    //System.out.println("Reading line " + i + ":" + data);
+                    String[] columns = data.split("	");
+
+                    int start = Integer.parseInt(columns[1])-1;//minus one because nodes start at 0
+                    int end = Integer.parseInt(columns[2])-1;
+                    double C = Double.parseDouble(columns[3]);
+                    double t_ff = Double.parseDouble(columns[5]);
+                    double alpha = Double.parseDouble(columns[6]);
+                    double beta= Double.parseDouble(columns[7]);
+                    links[i] = new Link(nodes[start], nodes[end], t_ff, C, alpha, beta);
+                    i++;
+                }
+                
+                if(data.contains("Capacity")){
+                    isData=true;
+                }
+            }
+            myReader.close();
+        } catch (IOException ex){
+            ex.printStackTrace(System.err);
+        }
     }
     
     public void readTrips(File tripsFile) throws IOException
@@ -87,8 +171,45 @@ public class Network
         Exercise 5(d)
         ********** */
         
-        // fill this in
-        
+        Boolean isData = false;
+        try{
+            Scanner myReader = new Scanner(tripsFile);
+                while(myReader.hasNextLine()){
+                    String data = myReader.nextLine();
+                    if(data.contains("Origin")){
+                        Boolean thisZone = true;
+                        data = data.substring(6);
+                        data = data.trim();
+                        System.out.println("Looking at Origin " + data);
+                        int currZone = Integer.parseInt(data);
+                        while(thisZone){
+                            //System.out.println("NEXT IS " + myReader.next());
+                            String s = myReader.next();
+                            int nodeNum = Integer.parseInt(s);   
+                            //System.out.println("Set nodeNum to " + s);
+                            s = myReader.next();
+                            //System.out.println("This is a colon " + s);
+                            s = myReader.next();
+                            s = s.replace(";", "");
+                            //System.out.println("Set demand to " + s);
+                            double demand = Double.parseDouble(s);
+                            
+                            System.out.println("Adding demand of " + demand + " to node " + nodeNum);
+                            zones[currZone-1].addDemand(nodes[nodeNum-1], demand);
+                            if (myReader.hasNext("Origin") || !(myReader.hasNext())){
+                                System.out.println("Leaving origin " + currZone);
+                                thisZone = false;
+                            }
+                        }
+                    }
+                    
+                    if(data.contains("END OF METADATA")){
+                        isData = true;
+                    }
+                }
+        } catch (IOException ex){
+            ex.printStackTrace(System.err);
+        }
     }
     
     /* **********

@@ -13,13 +13,14 @@ import java.util.HashMap;
  */
 public class Zone extends Node
 {
-    
+    private HashMap<Node, Double> demand = new HashMap<Node, Double>();
+    private boolean isThru;
     /* **********
     Exercise 4(a)
     ********** */
     public Zone(int id)
     {
-        // fill this in
+        super(id);
     }
     
     
@@ -29,13 +30,16 @@ public class Zone extends Node
     ********** */
     public void addDemand(Node s, double d)
     {
-        // fill this in
+        demand.put(s, d);
     }
     
     public double getDemand(Node s)
     {
-        // fill this in
-        return 0;
+        if(demand.get(s) == null){
+            return 0;
+        } else {
+            return demand.get(s);
+        }
     }
     
     
@@ -44,8 +48,11 @@ public class Zone extends Node
     ********** */
     public double getProductions()
     {
-        // fill this in
-        return 0;
+        double dem = 0;
+        for(Node i : demand.keySet()){
+            dem += getDemand(i);
+        }
+        return dem;
     }
     
     
@@ -56,11 +63,11 @@ public class Zone extends Node
     public boolean isThruNode()
     {
         // fill this in
-        return false;
+        return isThru;
     }
     
     public void setThruNode(boolean thru)
     {
-        // fill this in
+        this.isThru=thru;
     }
 }

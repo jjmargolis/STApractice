@@ -8,6 +8,7 @@ package sta;
 /**
  *
  * @author micha
+ * 
  */
 public class Link 
 {
@@ -22,6 +23,15 @@ public class Link
     private Node start, end;
     
     // construct this Link with the given parameters
+    /**
+     * 
+     * @param start The node the link starts at 
+     * @param end The node the link ends at
+     * @param t_ff Link travel time
+     * @param C Link Capacity
+     * @param alpha Constant alpha
+     * @param beta Constant Beta
+     */
     public Link(Node start, Node end, double t_ff, double C, double alpha, double beta)
     {
         this.start = start;
@@ -30,6 +40,7 @@ public class Link
         this.C = C;
         this.alpha = alpha;
         this.beta = beta;
+        start.addOutgoingLink(this);
     }
     
     // updates the flow on this link
@@ -105,8 +116,6 @@ public class Link
     {
         // fill this in
         return "(" + start.toString() + ", " + end.toString() + ")";
-   
-     
     }
     
     
