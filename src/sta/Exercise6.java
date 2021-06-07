@@ -36,8 +36,8 @@ public class Exercise6
             path.add(links[12]);
         }
 
-        System.out.println("Path 1 connected: " + path.isConnected());
-        System.out.println("Path 1 travel time: " + path.getTravelTime());        
+        System.out.println(path.isConnected());
+        System.out.println(path.getTravelTime());        
         
         
         Path path2 = new Path();
@@ -50,11 +50,11 @@ public class Exercise6
             }
         }
         
-        System.out.println("Path2 connected?: " + path2.isConnected());
-        System.out.println("Path 2 travel time: " + path2.getTravelTime());   
+        System.out.println(path2.isConnected());
+        System.out.println(path2.getTravelTime());   
         
-        System.out.println("Path source: " + path.getSource()+" to: "+path.getDest());
-        System.out.println("Path source: " + path2.getSource()+" to: "+path2.getDest());
+        System.out.println(path.getSource()+" "+path.getDest());
+        System.out.println(path2.getSource()+" "+path2.getDest());
         
         if(nodes.length > 0)
         {
@@ -62,7 +62,7 @@ public class Exercise6
 
             for(int i = 0; i < nodes.length; i++)
             {
-                System.out.println("Node " + nodes[i]+" Cost: "+nodes[i].cost+" Predeccesor: "+nodes[i].predecessor);
+                System.out.println(nodes[i]+" "+nodes[i].cost+" "+nodes[i].predecessor);
                 System.out.println(network.trace(nodes[0], nodes[i]));
             }
 
@@ -91,12 +91,115 @@ public class Exercise6
         Node[] nodes = network.getNodes();
         Link[] links = network.getLinks();
         
+        int[][] flowdata = new int[][]{
+        new int[]{0, 1, 2},
+        new int[]{1, 1, 3},
+        new int[]{2, 2, 1},
+        new int[]{3, 2, 6},
+        new int[]{4, 3, 1},
+        new int[]{5, 3, 4},
+        new int[]{6, 3, 12},
+        new int[]{7, 4, 3},
+        new int[]{8, 4, 5},
+        new int[]{9, 4, 11},
+        new int[]{10, 5, 4},
+        new int[]{11, 5, 6},
+        new int[]{12, 5, 9},
+        new int[]{13, 6, 2},
+        new int[]{14, 6, 5},
+        new int[]{15, 6, 8},
+        new int[]{16, 7, 8},
+        new int[]{17, 7, 18},
+        new int[]{18, 8, 6},
+        new int[]{19, 8, 7},
+        new int[]{20, 8, 9},
+        new int[]{21, 8, 16},
+        new int[]{22, 9, 5},
+        new int[]{23, 9, 8},
+        new int[]{24, 9, 10},
+        new int[]{25, 10, 9},
+        new int[]{26, 10, 11},
+        new int[]{27, 10, 15},
+        new int[]{28, 10, 16},
+        new int[]{29, 10, 17},
+        new int[]{30, 11, 4},
+        new int[]{31, 11, 10},
+        new int[]{32, 11, 12},
+        new int[]{33, 11, 14},
+        new int[]{34, 12, 3},
+        new int[]{35, 12, 11},
+        new int[]{36, 12, 13},
+        new int[]{37, 13, 12},
+        new int[]{38, 13, 24},
+        new int[]{39, 14, 11},
+        new int[]{40, 14, 15},
+        new int[]{41, 14, 23},
+        new int[]{42, 15, 10},
+        new int[]{43, 15, 14},
+        new int[]{44, 15, 19},
+        new int[]{45, 15, 22},
+        new int[]{46, 16, 8},
+        new int[]{47, 16, 10},
+        new int[]{48, 16, 17},
+        new int[]{49, 16, 18},
+        new int[]{50, 17, 10},
+        new int[]{51, 17, 16},
+        new int[]{52, 17, 19},
+        new int[]{53, 18, 7},
+        new int[]{54, 18, 16},
+        new int[]{55, 18, 20},
+        new int[]{56, 19, 15},
+        new int[]{57, 19, 17},
+        new int[]{58, 19, 20},
+        new int[]{59, 20, 18},
+        new int[]{60, 20, 19},
+        new int[]{61, 20, 21},
+        new int[]{62, 20, 22},
+        new int[]{63, 21, 20},
+        new int[]{64, 21, 22},
+        new int[]{65, 21, 24},
+        new int[]{66, 22, 15},
+        new int[]{67, 22, 20},
+        new int[]{68, 22, 21},
+        new int[]{69, 22, 23},
+        new int[]{70, 23, 14},
+        new int[]{71, 23, 22},
+        new int[]{72, 23, 24},
+        new int[]{73, 24, 13},
+        new int[]{74, 24, 21},
+        new int[]{75, 24, 23}};
+        
+        
+        for(int r = 0; r < flowdata.length; r++)
+        {
+            int i = flowdata[r][0];
+            int startid = flowdata[r][1];
+            int endid = flowdata[r][2];
+            
+            Node start = network.findNode(startid);
+            Node end = network.findNode(endid);
+            
+            if(start != null && end != null)
+            {
+                Link link = network.findLink(start, end);
+                
+                if(link != null)
+                {
+                    link.setFlow(1021 + i*500);
+                }
+            }
+        }
+        /*
+        for(int i = 0; i < links.length; i++)
+        {
+            System.out.println("new int[]{"+i+", "+links[i].getStart()+", "+links[i].getEnd()+"},");
+        }
         
         for(int i = 0; i < links.length; i++)
         {
             links[i].setFlow(1021 + i*500);
         }
-        
+        */
         Path path = new Path();
         
         if(links.length > 12)
@@ -157,30 +260,43 @@ public class Exercise6
         
         auto.flush("Link.getTravelTime()");
         
-        if(nodes.length > 0)
-        {
-            network.dijkstras(nodes[0]);
         
-            auto.test(nodes[0].predecessor == null);
+        for(Node n : nodes)
+        {
+            n.cost = 1;
+            n.predecessor = n;
+        }
+        
+        if(nodes.length > 20)
+        {
+            network.dijkstras(nodes[20]);
+        
+            auto.test(nodes[20].predecessor == null);
         }
         
         for(int i = 1; i < 24; i++)
         {
             if(i < nodes.length)
             {
-                if(i == 0)
+                if(i == 20)
                 {
                     auto.test(nodes[i].cost == 0);
                 }
                 else
                 {
-                    auto.test(nodes[i].cost > 0);
+                    auto.test(nodes[i].cost > 1);
                 }
             }
             else
             {
                 auto.test(false);
             }
+        }
+        
+        for(Node n : nodes)
+        {
+            n.cost = 1;
+            n.predecessor = n;
         }
 
         if(nodes.length > 10)
@@ -200,7 +316,7 @@ public class Exercise6
                 }
                 else
                 {
-                    auto.test(nodes[i].cost > 0);
+                    auto.test(nodes[i].cost > 1);
                 }
             }
             else
@@ -230,7 +346,6 @@ public class Exercise6
             }
             else
             {
-                System.out.println("Failed cost test on node " + i + ", cost is " + nodes[i].cost + " but should be " + costs[i]);
                 auto.test(false);
             }
         }
@@ -254,7 +369,6 @@ public class Exercise6
             }
             else
             {
-                System.out.println("Failed cost test on node " + i + ", cost is " + nodes[i].cost + " but should be " + costs[i]);
                 auto.test(false);
             }
         }
@@ -274,8 +388,6 @@ public class Exercise6
         {
             if(i < nodes.length)
             {
-                //System.out.println("Checking predessor of node " + i);
-                //System.out.println(nodes[i].predecessor.toString()+ " should equal " + network.findNode(preds[i]).toString());
                 auto.test(nodes[i].predecessor == network.findNode(preds[i]));
             }
             else

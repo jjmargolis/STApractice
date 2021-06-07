@@ -279,12 +279,12 @@ public class Network
         //u is an instance variable node
         //t_uv is getTravelTime()
         HashSet<Node> Q = new HashSet<Node>();
-        for(int i = r.getId(); i <= nodes.length; i++){ //iterate from node r to the last node
-           nodes[i-1].cost = Double.MAX_VALUE;
-           nodes[i-1].predecessor=null;
+        for(int i = 0; i < nodes.length; i++){ //iterate from node r to the last node
+           nodes[i].cost = Double.MAX_VALUE;
+           nodes[i].predecessor=null;
         }
     
-        r.cost=0;
+        nodes[r.getId()-1].cost=0;
         Q.add(r);
         
         /* **********
