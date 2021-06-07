@@ -67,6 +67,10 @@ public class Node
     /* **********
     Exercise 3(d)
     ********** */
+    /**
+     * Get all the outgoing links of this node
+     * @return Link ArrayList of all the outgoing links
+     */
     public ArrayList<Link> getOutgoing()
     {
         return this.outGoing;

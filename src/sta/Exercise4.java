@@ -70,6 +70,15 @@ public class Exercise4
         n2.addDemand(n3, 19);
         n2.addDemand(n4, 23);
         
+        /*
+        System.out.println("test 1 " + n1.getDemand(n2) + "should be " + 15);
+        System.out.println("test 2 " + n1.getDemand(n3) + "should be " + 29);
+        System.out.println("test 3 " + n1.getDemand(n4) + "should be " + 0);
+        System.out.println("test 4 " + n2.getDemand(n1) + "should be " + 0);
+        System.out.println("test 5 " + n2.getDemand(n3) + "should be " + 19);
+        System.out.println("test 6 " + n2.getDemand(n4) + "should be " + 23);
+        */
+
         auto.test(n1.getDemand(n2) == 15);
         auto.test(n1.getDemand(n3) == 29);
         auto.test(n1.getDemand(n4) == 0);

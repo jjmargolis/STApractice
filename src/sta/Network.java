@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Collections;
 import java.io.FileNotFoundException;
 
 /**
@@ -21,12 +22,15 @@ public class Network
     private Link[] links;
     private Zone[] zones;
     
+    private int firstThruNode;
+    
     public Network(String name)
     {
-        System.out.println("NEW NETWORK NOW");
+        System.out.println("NEW NETWORK: " + name);
         int numNodes=0;
         int numLinks=0;
         int numZones=0;
+        firstThruNode=0;
         try{
             File myObj = new File("C:/Users/jmarg/Documents/Github/STApractice/data/"+name+"/net.txt");
             Scanner myReader = new Scanner(myObj);
@@ -50,13 +54,18 @@ public class Network
                         data = data.substring(data.indexOf(">")+1);
                         data = data.trim();
                         numLinks=Integer.parseInt(data);
-                     } 
+                     }
+                    if(data.contains("<FIRST THRU NODE>")){
+                        data = data.substring(data.indexOf(">")+1);
+                        data = data.trim();
+                        firstThruNode=Integer.parseInt(data);
+                     }
                  } else {
                      //System.out.println("End of metadata reached");
                      end = true;
                  }
             }
-            System.out.println("Closing metadata scanner");
+            //System.out.println("Closing metadata scanner");
             myReader.close(); 
         } catch (FileNotFoundException e){
             System.out.println("An error occurred reading the file for the metadata.");
@@ -89,7 +98,6 @@ public class Network
     {
         this.nodes = nodes;
         this.links = links;
-        this.zones = zones;
     }
     
     
@@ -118,16 +126,18 @@ public class Network
         Exercise 5(b)
         ********** */
         for(int i = 0; i < zones.length; i++){
-            zones[i] = new Zone(i);
+            zones[i] = new Zone(i+1);//ids start at 1, array index starts at 0
+            if(i+1 < firstThruNode){
+                zones[i].setThruNode(false);
+            }
         }
         //do not construct new nodes, use existing zones
         for(int i = 0; i < nodes.length; i++){
             if(i < zones.length){
-                nodes[i] = zones[i];
+                nodes[i] = zones[i]; //ids start at 1, array index starts at 0
             } else {
-                nodes[i] = new Node(i);
-            }
-            
+                nodes[i] = new Node(i+1);//ids start at 1, array index starts at 0
+            }    
         }        
         
         
@@ -151,6 +161,7 @@ public class Network
                     double alpha = Double.parseDouble(columns[6]);
                     double beta= Double.parseDouble(columns[7]);
                     links[i] = new Link(nodes[start], nodes[end], t_ff, C, alpha, beta);
+                    nodes[start].addOutgoingLink(links[i]);
                     i++;
                 }
                 
@@ -164,6 +175,11 @@ public class Network
         }
     }
     
+    /**
+     * Reads the trips of the network from a file
+     * @param tripsFile the String of the name of the network in the data file
+     * @throws IOException if there is a problem reading the file
+     */
     public void readTrips(File tripsFile) throws IOException
     {
 
@@ -180,7 +196,7 @@ public class Network
                         Boolean thisZone = true;
                         data = data.substring(6);
                         data = data.trim();
-                        System.out.println("Looking at Origin " + data);
+                        //System.out.println("Looking at Origin " + data);
                         int currZone = Integer.parseInt(data);
                         while(thisZone){
                             //System.out.println("NEXT IS " + myReader.next());
@@ -194,10 +210,10 @@ public class Network
                             //System.out.println("Set demand to " + s);
                             double demand = Double.parseDouble(s);
                             
-                            System.out.println("Adding demand of " + demand + " to node " + nodeNum);
+                            //System.out.println("Adding demand of " + demand + " to node " + nodeNum);
                             zones[currZone-1].addDemand(nodes[nodeNum-1], demand);
                             if (myReader.hasNext("Origin") || !(myReader.hasNext())){
-                                System.out.println("Leaving origin " + currZone);
+                                //System.out.println("Leaving origin " + currZone);
                                 thisZone = false;
                             }
                         }
@@ -216,31 +232,95 @@ public class Network
     Exercise 5(e)
     ********** */
     
+    /**
+     * Finds a node given the node ID
+     * @param id
+     * @return the node, null if node not found
+     */
     public Node findNode(int id)
     {
-        // fill this in
+        for (Node node : nodes) {
+            if (node.getId() == id) {
+                return node;
+            }
+        }
         return null;
     }
     
+    /**
+     * Finds the link between two nodes
+     * @param i Starting node
+     * @param j Ending node
+     * @return The link that connects the two nodes, null if one cannot be found
+     */
     public Link findLink(Node i, Node j)
     {
         // fill this in
+        for(Link l : links){
+            if(l.getStart() == i && l.getEnd() == j){
+                return l;
+            }
+        }
         return null;
     }
     
     
-    
+    /**
+     * Shortest path algorithm, finds the shortest paths between all the nodes
+     * @param r The starting node
+     */
     public void dijkstras(Node r)
     {
         /* **********
         Exercise 6(b)
         ********** */
+        //c is cost, N are nodes, A are links, 
+        //Q is the hashset of all unsettled nodes
+        //u is an instance variable node
+        //t_uv is getTravelTime()
+        HashSet<Node> Q = new HashSet<Node>();
+        for(int i = r.getId(); i <= nodes.length; i++){ //iterate from node r to the last node
+           nodes[i-1].cost = Double.MAX_VALUE;
+           nodes[i-1].predecessor=null;
+        }
+    
+        r.cost=0;
+        Q.add(r);
         
         /* **********
         Exercise 6(c)
         ********** */
-        
-        // fill this in
+        while(!Q.isEmpty()){
+            Node u = null;
+            double smallc = Double.MAX_VALUE;
+            for(Node j : Q){ //find node in Q with min cost
+                //System.out.println("Looking at node " + j.toString() + " with cost " + j.cost);
+                if(j.cost < smallc){
+                    smallc = j.cost;
+                    u = j;
+                    //System.out.println("Current node is " + u.toString());
+                }
+            }
+            Q.remove(u);
+            //onto line 10, looping through all the outgoing links
+            /*System.out.println("Outoing links of " + u.toString() + ":");
+            for(Link v : u.getOutgoing()){
+                System.out.print(v.toString() + " ");
+            }
+            System.out.println("");*/
+            
+            
+            for(Link v : u.getOutgoing()){
+                double alt = u.cost + v.getTravelTime();
+                if(alt < v.getEnd().cost){
+                    //System.out.println("Route from " + u.toString() + " to " + v.getEnd().toString() + " is cheaper than");
+                    v.getEnd().cost=alt;
+                    v.getEnd().predecessor=u;
+                    //System.out.println("adding node " + v.getEnd().toString() + " to Q");
+                    Q.add(v.getEnd());
+                }
+            }
+        }
     }
     
     
@@ -249,8 +329,25 @@ public class Network
     ********** */
     public Path trace(Node r, Node s)
     {
-        // fill this in
-        return null;
+        //System.out.println("Finding path from " + r.toString() + " to " + s.toString());
+        if(s == null || r == null){
+            System.out.println("Starting or ending point is null");
+            return null;
+        }
+        Node n = s;
+        Path pi = new Path();
+        while(!(n==r)){
+            //System.out.println("Finding link from " + n.predecessor.toString() + " to " + n.toString());
+            if(n.predecessor != null){
+                pi.add(findLink(n.predecessor, n));
+                n=n.predecessor;
+            } else {
+                //System.out.println(n.toString() + "'s predeccessor is null, canceling loop early");
+                n=r;
+            }
+        }
+        pi = pi.reverse();
+        return pi;
     }
     
     

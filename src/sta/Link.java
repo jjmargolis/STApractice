@@ -27,7 +27,7 @@ public class Link
      * 
      * @param start The node the link starts at 
      * @param end The node the link ends at
-     * @param t_ff Link travel time
+     * @param t_ff Link travel time/cost
      * @param C Link Capacity
      * @param alpha Constant alpha
      * @param beta Constant Beta
@@ -40,7 +40,10 @@ public class Link
         this.C = C;
         this.alpha = alpha;
         this.beta = beta;
-        start.addOutgoingLink(this);
+        /*if(start != null){
+            start.addOutgoingLink(this);
+        }*/
+
     }
     
     // updates the flow on this link
@@ -86,8 +89,15 @@ public class Link
         return getStart().getId()+getEnd().getId()*10000;
     }
     
-    
-    
+    /**
+     * Flips the order of the link
+     * @return The new reversed link
+     */
+    public Link reverse(){
+        Node s = this.start;
+        Node e = this.end;
+        return new Link(e, s, t_ff, C, alpha, beta);
+    }
     
     
     

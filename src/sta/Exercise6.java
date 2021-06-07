@@ -36,8 +36,8 @@ public class Exercise6
             path.add(links[12]);
         }
 
-        System.out.println(path.isConnected());
-        System.out.println(path.getTravelTime());        
+        System.out.println("Path 1 connected: " + path.isConnected());
+        System.out.println("Path 1 travel time: " + path.getTravelTime());        
         
         
         Path path2 = new Path();
@@ -50,11 +50,11 @@ public class Exercise6
             }
         }
         
-        System.out.println(path2.isConnected());
-        System.out.println(path2.getTravelTime());   
+        System.out.println("Path2 connected?: " + path2.isConnected());
+        System.out.println("Path 2 travel time: " + path2.getTravelTime());   
         
-        System.out.println(path.getSource()+" "+path.getDest());
-        System.out.println(path2.getSource()+" "+path2.getDest());
+        System.out.println("Path source: " + path.getSource()+" to: "+path.getDest());
+        System.out.println("Path source: " + path2.getSource()+" to: "+path2.getDest());
         
         if(nodes.length > 0)
         {
@@ -62,7 +62,7 @@ public class Exercise6
 
             for(int i = 0; i < nodes.length; i++)
             {
-                System.out.println(nodes[i]+" "+nodes[i].cost+" "+nodes[i].predecessor);
+                System.out.println("Node " + nodes[i]+" Cost: "+nodes[i].cost+" Predeccesor: "+nodes[i].predecessor);
                 System.out.println(network.trace(nodes[0], nodes[i]));
             }
 
@@ -230,6 +230,7 @@ public class Exercise6
             }
             else
             {
+                System.out.println("Failed cost test on node " + i + ", cost is " + nodes[i].cost + " but should be " + costs[i]);
                 auto.test(false);
             }
         }
@@ -253,6 +254,7 @@ public class Exercise6
             }
             else
             {
+                System.out.println("Failed cost test on node " + i + ", cost is " + nodes[i].cost + " but should be " + costs[i]);
                 auto.test(false);
             }
         }
@@ -272,6 +274,8 @@ public class Exercise6
         {
             if(i < nodes.length)
             {
+                //System.out.println("Checking predessor of node " + i);
+                //System.out.println(nodes[i].predecessor.toString()+ " should equal " + network.findNode(preds[i]).toString());
                 auto.test(nodes[i].predecessor == network.findNode(preds[i]));
             }
             else

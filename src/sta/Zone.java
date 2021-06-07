@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class Zone extends Node
 {
-    private HashMap<Node, Double> demand = new HashMap<Node, Double>();
+    private HashMap<Node, Double> demand;
     private boolean isThru;
     /* **********
     Exercise 4(a)
@@ -21,6 +21,8 @@ public class Zone extends Node
     public Zone(int id)
     {
         super(id);
+        demand = new HashMap<>();
+        isThru = true;
     }
     
     
@@ -30,7 +32,13 @@ public class Zone extends Node
     ********** */
     public void addDemand(Node s, double d)
     {
-        demand.put(s, d);
+        //System.out.println("Adding demand of " + d + " to node " + s.toString());
+        if(demand.get(s) == null || demand.get(s) == 0){
+            demand.put(s, d);
+        } else {
+            double dem = demand.get(s);
+            demand.put(s, d+dem);
+        }
     }
     
     public double getDemand(Node s)
