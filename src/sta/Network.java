@@ -32,7 +32,7 @@ public class Network
         int numZones=0;
         firstThruNode=0;
         try{
-            File myObj = new File("C:/Users/jmarg/Documents/Github/STApractice/data/"+name+"/net.txt");
+            File myObj = new File("data/"+name+"/net.txt");
             Scanner myReader = new Scanner(myObj);
             Boolean end = false;
             while(myReader.hasNextLine() && end == false){
@@ -144,7 +144,7 @@ public class Network
         /* **********
         Exercise 5(c)
         ********** */
-        Boolean isData = false;
+        boolean isData = false;
         int i = 0;
         try{
             Scanner myReader = new Scanner(netFile);
@@ -187,13 +187,13 @@ public class Network
         Exercise 5(d)
         ********** */
         
-        Boolean isData = false;
+        boolean isData = false;
         try{
             Scanner myReader = new Scanner(tripsFile);
                 while(myReader.hasNextLine()){
                     String data = myReader.nextLine();
                     if(data.contains("Origin")){
-                        Boolean thisZone = true;
+                        boolean thisZone = true;
                         data = data.substring(6);
                         data = data.trim();
                         //System.out.println("Looking at Origin " + data);
@@ -303,13 +303,7 @@ public class Network
                 }
             }
             Q.remove(u);
-            //onto line 10, looping through all the outgoing links
-            /*System.out.println("Outoing links of " + u.toString() + ":");
-            for(Link v : u.getOutgoing()){
-                System.out.print(v.toString() + " ");
-            }
-            System.out.println("");*/
-            
+            //onto line 10, looping through all the outgoing link
             
             for(Link v : u.getOutgoing()){
                 double alt = u.cost + v.getTravelTime();
@@ -343,7 +337,7 @@ public class Network
                 pi.add(findLink(n.predecessor, n));
                 n=n.predecessor;
             } else {
-                //System.out.println(n.toString() + "'s predeccessor is null, canceling loop early");
+                //System.out.println(n.toString() + "'s predecessor is null, canceling loop early");
                 n=r;
             }
         }
@@ -371,7 +365,7 @@ public class Network
     
     /**
      * Shortest Path Travel Time
-     * sum of the time on the shortest path times its demand
+     * sum of [time on the shortest path * its demand] over all paths
      * mu_rs = min travel time from r to s
      * d_rs = total demand from r to s
      * @return double SPTT the shortest path travel time of the network
@@ -379,16 +373,12 @@ public class Network
     public double getSPTT()
     {
         double SPTT = 0;
-        for(Zone z : zones){
-            double maxTravelTime = Double.MAX_VALUE;
-            double mu_rs = 0;
-            for(Link l : z.){
-                if(l.getTravelTime() < maxTravelTime){
-                    maxTravelTime = l.getTravelTime();
-                    mu_rs = l.getTravelTime();
-                }
+        for(Zone r : zones){
+            for(Zone s : zones){
+                double mu_rs = 0;
+                dijkstras(r);
+                SPTT += s.cost * r.getDemand(s); //cost of s is the shortest path from s to r, and then multiply by the demand from r to s
             }
-            SPTT += (z.getProductions()*mu_rs);
         }
         return SPTT;
     }
@@ -408,13 +398,17 @@ public class Network
 
     /**
      * Average Excess Cost
+     * Average difference in time over all paths vs shortest paths
      * (Total System Travel Time - Shortest Path Travel Time)/Sum of all demand
      * @return AEC
      */
     public double getAEC()
     {
-        // fill this in
-        return 0.0;
+        double d_rs = 0;
+        for(Zone r : zones){
+            d_rs += r.getProductions();
+        }
+        return (this.getTSTT()-this.getSPTT())/d_rs;
     }
     
     

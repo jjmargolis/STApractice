@@ -60,7 +60,7 @@ public class Zone extends Node
     Exercise 4(c)
     ********** */
     /**
-     * Productions is the sum of all the demand of the zone
+     * Productions is the sum of all the demand to this zone
      * @return Productions
      */
     public double getProductions()
