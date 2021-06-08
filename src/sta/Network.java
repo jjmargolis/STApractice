@@ -267,6 +267,7 @@ public class Network
     
     /**
      * Shortest path algorithm, finds the shortest paths between all the nodes
+     * Sets the cost and predecessor labels of the shortest path on all the links in the network from node r
      * @param r The starting node
      */
     public void dijkstras(Node r)
@@ -279,7 +280,7 @@ public class Network
         //u is an instance variable node
         //t_uv is getTravelTime()
         HashSet<Node> Q = new HashSet<Node>();
-        for(int i = 0; i < nodes.length; i++){ //iterate from node r to the last node
+        for(int i = 0; i < nodes.length; i++){
            nodes[i].cost = Double.MAX_VALUE;
            nodes[i].predecessor=null;
         }
@@ -354,24 +355,62 @@ public class Network
     /* **********
     Exercise 7
     ********** */
+    /**
+     * Total System Travel Time, the total amount of travel time across all the links in the network. 
+     * Sum of flow * travel time on all links
+     * @return double TSTT
+     */
     public double getTSTT()
     {
-        // fill this in
-        return 0.0;
+        double TSTT = 0;
+        for(Link l : links){
+            TSTT += (l.getFlow()*l.getTravelTime());
+        }
+        return TSTT;
     }
     
+    /**
+     * Shortest Path Travel Time
+     * sum of the time on the shortest path times its demand
+     * mu_rs = min travel time from r to s
+     * d_rs = total demand from r to s
+     * @return double SPTT the shortest path travel time of the network
+     */
     public double getSPTT()
     {
-        // fill this in
-        return 0.0;
+        double SPTT = 0;
+        for(Zone z : zones){
+            double maxTravelTime = Double.MAX_VALUE;
+            double mu_rs = 0;
+            for(Link l : z.){
+                if(l.getTravelTime() < maxTravelTime){
+                    maxTravelTime = l.getTravelTime();
+                    mu_rs = l.getTravelTime();
+                }
+            }
+            SPTT += (z.getProductions()*mu_rs);
+        }
+        return SPTT;
     }
     
+    /**
+     * Get the total amount of trips in the network from the zone
+     * @return double Number of trips
+     */
     public double getTotalTrips()
     {
-        // fill this in
-        return 0.0;
+        double trips = 0;
+        for(Zone z : zones){
+            trips += z.getProductions();
+        }
+        return trips;
     }
 
+    /**
+     * Average Excess Cost
+     * (Total System Travel Time - Shortest Path Travel Time)/Sum of all demand
+     * @return AEC
+     */
     public double getAEC()
     {
         // fill this in

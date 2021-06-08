@@ -41,6 +41,11 @@ public class Zone extends Node
         }
     }
     
+    /**
+     * Get demand of this particular node
+     * @param s the node under investigation
+     * @return d The demand of the zone, 0 if null
+     */
     public double getDemand(Node s)
     {
         if(demand.get(s) == null){
@@ -54,6 +59,10 @@ public class Zone extends Node
     /* **********
     Exercise 4(c)
     ********** */
+    /**
+     * Productions is the sum of all the demand of the zone
+     * @return Productions
+     */
     public double getProductions()
     {
         double dem = 0;
