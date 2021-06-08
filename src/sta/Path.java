@@ -81,8 +81,15 @@ public class Path extends ArrayList<Link>
     /* **********
     Exercise 8(a)
     ********** */
+
+    /**
+     * Adds the specified flow to the x_star of all the links in the path
+     * @param h The new flow to be added
+     */
     public void addHstar(double h)
     {
-        // fill this in
+        for(Link l : this){
+            l.addXstar(h);
+        }
     }
 }

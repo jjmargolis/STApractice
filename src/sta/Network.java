@@ -74,9 +74,9 @@ public class Network
         
 
         
-        System.out.println("numNodes = " + numNodes);
-        System.out.println("numLinks = " + numLinks);
-        System.out.println("numZones = " + numZones);
+        //System.out.println("numNodes = " + numNodes);
+        //System.out.println("numLinks = " + numLinks);
+        //System.out.println("numZones = " + numZones);
         nodes = new Node[numNodes];
         links = new Link[numLinks];
         zones = new Zone[numZones];
@@ -423,35 +423,70 @@ public class Network
     /* **********
     Exercise 8(b)
     ********** */
+
+    /**
+     * Determines the size of lambda, the weight from the method of succesive averages
+     * @param iteration The number of iterations
+     * @return Lamda, the weight of the network
+     */
     public double calculateStepsize(int iteration)
     {
-        // fill this in
-        return 0.0;
+        return (1/ (double) iteration);
     }
 
+    /**
+     * Part of Method of Succsive Averages
+     * Loops through all the links and calculates a new x from the weight and each link's x_star
+     * @param stepsize lamda, the weight
+     */
     public void calculateNewX(double stepsize)
     {
-        // fill this in
+        for(Link l : links){
+            l.calculateNewX(stepsize);
+        }
     }
     
     
     /* **********
     Exercise 8(c)
     ********** */
+
+    /**
+     * Calculate Average ___
+     * This is lines 6-13
+     */
     public void calculateAON()
     {
-        // fill this in
+        for(Zone r: zones){
+            dijkstras(r);
+            for(Zone s : zones){
+                Path pi_rs_star = trace(r, s);
+                for(Link l : pi_rs_star){
+                    l.addXstar(r.getDemand(s));
+                }
+            }
+        }
     }
     
     
     /* **********
     Exercise 8(d)
     ********** */
+
+    /**
+     * Method of Successive Averages
+     * @param max_iteration Number of iterations
+     */
     public void msa(int max_iteration)
     {
         System.out.println("Iteration\tAEC");
-        
-        // fill this in
+
+        for(int i = 1; i <= max_iteration; i++){
+            calculateAON();
+            double lambda = calculateStepsize(i);
+            calculateNewX(lambda);
+            System.out.println(i + "\t" + getAEC());
+        }
     }
     
     

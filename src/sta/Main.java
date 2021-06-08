@@ -19,8 +19,8 @@ public class Main
         //Exercise4.main(args);
         //Exercise5.main(args);
         //Exercise6.main(args);
-        Exercise7.main(args);
-        //Exercise8.main(args);
+        //Exercise7.main(args);
+        Exercise8.main(args);
     }
     
 }

@@ -21,6 +21,9 @@ public class Link
     
     // the start and end nodes of this link. Links are directed.
     private Node start, end;
+
+    //xStar, use for successive averages
+    private double x_star;
     
     // construct this Link with the given parameters
     /**
@@ -40,6 +43,7 @@ public class Link
         this.C = C;
         this.alpha = alpha;
         this.beta = beta;
+        x_star=0;
         /*if(start != null){
             start.addOutgoingLink(this);
         }*/
@@ -72,13 +76,11 @@ public class Link
     ********** */
     public double getCapacity()
     {
-        // fill this in
         return C;
     }
     
     public double getFlow()
     {
-        // fill this in
         return x;
     }
     
@@ -134,14 +136,20 @@ public class Link
     ********** */
     public void addXstar(double flow)
     {
-        // fill this in
+        x_star+=flow;
     }
     
     /* **********
     Exercise 8(b)
     ********** */
+
+    /**
+     * Sets the new flow from lamda, as part of the method of successive averages
+     * @param stepsize lamda, the weight
+     */
     public void calculateNewX(double stepsize)
     {
-        // fill this in
+        x = ((1-stepsize)*x) + (stepsize*x_star);
+        x_star = 0; //because we just implemented x_star into x
     }
 }
